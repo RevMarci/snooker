@@ -1,6 +1,6 @@
 import cv2
-from src.YouTubeClipDownloader import YouTubeClipDownloader
-from src.VideoHandler import VideoHandler
+from src.youtube_clip_downloader import YouTubeClipDownloader
+from src.video_handler import VideoHandler
 
 # Adjust this to change the video speed
 _video_speed = 1.0 
