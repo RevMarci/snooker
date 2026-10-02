@@ -66,7 +66,7 @@ class YouTubeClipDownloader:
         # Duration
         duration_input = input("Duration (e.g., 1:00 or 15): ").strip()
         if not duration_input:
-            self.duration = 60
+            self.duration = 30
         else:
             self.duration = duration_input
         
