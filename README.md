@@ -8,6 +8,19 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
+FFmpeg must be installed and added to your system PATH.
+On Windows, you can install it using:
+
+```bash
+winget install Gyan.FFmpeg
+```
+
+You can check if it was installed correctly by running:
+
+```bash
+ffmpeg -version
+```
+
 Then run the program:
 
 ```bash
