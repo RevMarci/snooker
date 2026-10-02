@@ -43,16 +43,20 @@ class YouTubeClipDownloader:
 
         raise ValueError(f"Invalid time format: {time_str}")
 
-    def read(self):
+    def read(self, provided_url=None):
         """Reads the user input for download parameters."""
         print("--- YouTube Clip Downloader ---")
-        self.url = input("Please enter the YouTube URL: ").strip()
+        
+        if provided_url:
+            self.url = provided_url
+            print(f"> Using provided URL: {self.url}")
+        else:
+            self.url = input("Please enter the YouTube URL: ").strip()
 
-        # 1. URL elemzése a 't' paraméter kinyeréséhez
+        # Process the URL to extract start time if present
         parsed_url = urlparse(self.url)
         query_params = parse_qs(parsed_url.query)
 
-        # 2. Megnézzük, van-e 't' a linkben
         if 't' in query_params:
             self.start = query_params['t'][0]
             print(f"> Detected start time from the link: {self.start} (automatically set).")

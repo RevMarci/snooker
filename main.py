@@ -1,3 +1,4 @@
+import os
 import cv2
 from src.youtube_clip_downloader import YouTubeClipDownloader
 from src.video_handler import VideoHandler
@@ -11,22 +12,43 @@ _display_scale = 0.5
 def main():
     print("Run snooker detection...\n")
     
-    downloader = YouTubeClipDownloader()
+    user_input = input("Enter video file path or YouTube URL (e.g., clip1.mp4 or https://youtu.be/...): ").strip()
     
-    # Get video data from user
-    downloader.read()
-    
-    downloader.run()
+    video_to_process = None
 
-    if not downloader.output:
-        print("Error: No downloaded file found.")
-        return
+    if user_input.startswith(("http://", "https://", "www.", "youtu.be")):
+        print("\n> YouTube link detected...")
+        downloader = YouTubeClipDownloader()
+        
+        downloader.read(provided_url=user_input)
+        downloader.run()
+
+        if not downloader.output:
+            print("Error: No downloaded file found.")
+            return
+            
+        video_to_process = downloader.output
+        
+    else:
+        print("\n> Local file name detected. Searching for the file...")
+        if not user_input.lower().endswith(".mp4"):
+            user_input += ".mp4"
+            
+        if os.path.exists(user_input):
+            video_to_process = user_input
+        elif os.path.exists(os.path.join("clips", user_input)):
+            video_to_process = os.path.join("clips", user_input)
+        else:
+            print(f"Error: The file '{user_input}' was not found in the current or 'clips/' directory.")
+            return
+
+    print(f"\n> Video selected for processing: {video_to_process}\n")
     
     # Process the video
     try:
         mock_detector = MockBallDetector()
 
-        with VideoHandler(downloader.output) as video:
+        with VideoHandler(video_to_process) as video:
             print(f"Video paramaters: {video.width}x{video.height}, FPS: {video.fps}")
             
             for frame_index, frame in enumerate(video.frames()):
@@ -57,4 +79,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
