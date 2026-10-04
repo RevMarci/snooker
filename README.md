@@ -27,8 +27,17 @@ Then run the program:
 python main.py
 ```
 
-Follow the instructions in the terminal. You can use either a YouTube link or a filename if you have already downloaded the video.
-For a YouTube link, you can use either a simple link or a link with a timestamp.
+Follow the instructions in the terminal.
+
+You can use either a YouTube link or a filename if you have already downloaded the video.
+For a YouTube link, you can use either a simple link or a link with a timestamp.  
+
+Note: Recently ended YouTube livestreams may not work. If this happens, use an older video instead.
+
+Recommended source for youtube videos:  
+https://www.youtube.com/@snookerdresden2  
+https://www.youtube.com/@snookerdresden3
+
 There are some variables you can adjust at the top of main.py:
 
 ```python
