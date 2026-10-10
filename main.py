@@ -2,8 +2,8 @@ import os
 import cv2
 from src.youtube_clip_downloader import YouTubeClipDownloader
 from src.video_handler import VideoHandler
-
 from src.mock_ball_detector import MockBallDetector
+from src.perspective_corrector import PerspectiveCorrector
 
 # Adjust this to change the video speed
 _video_speed = 1.0
@@ -48,12 +48,23 @@ def main():
     try:
         mock_detector = MockBallDetector()
 
+        # --- A pontok definiálása ---
+        src_points = [
+            [500, 50],   # Bal felső (példa)
+            [1500, 50],  # Jobb felső (példa)
+            [100, 900],  # Bal alsó (példa)
+            [1800, 900]  # Jobb alsó (példa)
+        ]
+        
+        # JAVÍTVA: Itt átadjuk a pontokat a zárójelek között!
+        perspective_corrector = PerspectiveCorrector(src_points)
+
         with VideoHandler(video_to_process) as video:
             print(f"Video paramaters: {video.width}x{video.height}, FPS: {video.fps}")
             
             for frame_index, frame in enumerate(video.frames()):
                 
-                # Example
+                # --- 1. ABLAK: Detector (átméretezve az eredeti logika szerint) ---
                 processed_frame = mock_detector.process_frame(frame)
 
                 if _display_scale != 1.0:
@@ -63,7 +74,14 @@ def main():
                 else:
                     display_frame = processed_frame
                 
-                cv2.imshow("Snooker Video", display_frame)
+                cv2.imshow("Snooker Video (Detector)", display_frame)
+                
+                # --- 2. ABLAK: Perspective Corrector (eredeti méretben) ---
+                # JAVÍTVA: Itt 'process_frame' helyett 'process'-t hívunk, mert így van elnevezve az osztályodban.
+                corrected_frame = perspective_corrector.process(frame)
+                
+                # Ezt nem méretezzük át, az eredeti 'corrected_frame' megy az új ablakba
+                cv2.imshow("Snooker Video (Perspective Corrected)", corrected_frame)
                 
                 # Escape key: Q
                 if cv2.waitKey(int(1000 / video.fps / _video_speed)) & 0xFF == ord('q'):
