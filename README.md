@@ -43,4 +43,11 @@ There are some variables you can adjust at the top of main.py:
 ```python
 _video_speed = 1.0
 _display_scale = 0.5
+
+SHOW_ORIGINAL = False
+SHOW_CORRECTED = False
+SHOW_PROCESSED = True
+
+ENABLE_COLOR_DETECTOR = True
+ENABLE_NEURAL_DETECTOR = True
 ```
