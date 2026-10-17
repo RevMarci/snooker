@@ -48,40 +48,32 @@ def main():
     try:
         mock_detector = MockBallDetector()
 
-        # --- A pontok definiálása ---
-        src_points = [
-            [500, 50],   # Bal felső (példa)
-            [1500, 50],  # Jobb felső (példa)
-            [100, 900],  # Bal alsó (példa)
-            [1800, 900]  # Jobb alsó (példa)
-        ]
-        
-        # JAVÍTVA: Itt átadjuk a pontokat a zárójelek között!
-        perspective_corrector = PerspectiveCorrector(src_points)
+        perspective_corrector = PerspectiveCorrector()
 
         with VideoHandler(video_to_process) as video:
             print(f"Video paramaters: {video.width}x{video.height}, FPS: {video.fps}")
             
             for frame_index, frame in enumerate(video.frames()):
+                # Frame correction
+                corrected_frame = perspective_corrector.process(frame)
                 
-                # --- 1. ABLAK: Detector (átméretezve az eredeti logika szerint) ---
-                processed_frame = mock_detector.process_frame(frame)
+                # == MAIN PROCESSING ==
+                processed_frame = mock_detector.process_frame(corrected_frame)
+                # == END OF MAIN PROCESSING ==
 
                 if _display_scale != 1.0:
                     new_width = int(video.width * _display_scale)
                     new_height = int(video.height * _display_scale)
-                    display_frame = cv2.resize(processed_frame, (new_width, new_height))
+
+                    display_frame = cv2.resize(frame, (new_width, new_height))
+                    corrected_frame = cv2.resize(corrected_frame, (new_width, new_height))
+                    processed_frame = cv2.resize(processed_frame, (new_width, new_height))
                 else:
-                    display_frame = processed_frame
+                    display_frame = frame
                 
-                cv2.imshow("Snooker Video (Detector)", display_frame)
-                
-                # --- 2. ABLAK: Perspective Corrector (eredeti méretben) ---
-                # JAVÍTVA: Itt 'process_frame' helyett 'process'-t hívunk, mert így van elnevezve az osztályodban.
-                corrected_frame = perspective_corrector.process(frame)
-                
-                # Ezt nem méretezzük át, az eredeti 'corrected_frame' megy az új ablakba
+                cv2.imshow("Snooker Video (Origami)", display_frame)
                 cv2.imshow("Snooker Video (Perspective Corrected)", corrected_frame)
+                cv2.imshow("Snooker Video (Processed)", processed_frame)
                 
                 # Escape key: Q
                 if cv2.waitKey(int(1000 / video.fps / _video_speed)) & 0xFF == ord('q'):
@@ -97,3 +89,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
