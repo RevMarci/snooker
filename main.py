@@ -7,14 +7,16 @@ from src.perspective_corrector import PerspectiveCorrector
 
 from src.color_based_ball_detector import ColorBasedBallDetector
 from src.neural_network_ball_detector import NeuralNetworkBallDetector
+from src.table_top_view import table_top_view
 
 # Adjust this to change the video speed
 _video_speed = 1.0
 _display_scale = 0.5
 
-SHOW_ORIGINAL = False
-SHOW_CORRECTED = False
+SHOW_ORIGINAL = True
+SHOW_CORRECTED = False    
 SHOW_PROCESSED = True
+SHOW_table_detect = True
 
 ENABLE_COLOR_DETECTOR = True
 ENABLE_NEURAL_DETECTOR = True
@@ -100,6 +102,9 @@ def main():
                 if SHOW_PROCESSED:
                     disp_proc = cv2.resize(processed_frame, (new_width, new_height)) if _display_scale != 1.0 else processed_frame
                     cv2.imshow("Snooker Video (Processed)", disp_proc)
+
+                if SHOW_table_detect:
+                    cv2.imshow("Snooker Table (Top view)", table_top_view(frame))
                 
                 # Escape key: Q
                 if cv2.waitKey(int(1000 / video.fps / _video_speed)) & 0xFF == ord('q'):
