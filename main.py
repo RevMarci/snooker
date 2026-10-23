@@ -11,10 +11,10 @@ from src.table_top_view import table_top_view
 
 # Adjust this to change the video speed
 _video_speed = 1.0
-_display_scale = 0.5
+_display_scale = 1.0
 
-SHOW_ORIGINAL = True
-SHOW_CORRECTED = False    
+SHOW_ORIGINAL = False
+SHOW_CORRECTED = False
 SHOW_PROCESSED = True
 SHOW_table_detect = True
 
@@ -69,43 +69,35 @@ def main():
             for frame_index, frame in enumerate(video.frames()):
                 # Frame correction
                 corrected_frame = perspective_corrector.process(frame)
+                table_frame = table_top_view(frame)
                 
                 # == MAIN PROCESSING ==
-                combined_overlay = np.zeros_like(corrected_frame)
+                combined_overlay = np.zeros_like(table_frame)
 
                 if ENABLE_COLOR_DETECTOR:
-                    overlay_color = color_based_detector.process_frame(corrected_frame)
+                    overlay_color = color_based_detector.process_frame(table_frame)
                     combined_overlay = cv2.add(combined_overlay, overlay_color)
 
                 if ENABLE_NEURAL_DETECTOR:
-                    overlay_neural = neural_network_detector.process_frame(corrected_frame)
+                    overlay_neural = neural_network_detector.process_frame(table_frame)
                     combined_overlay = cv2.add(combined_overlay, overlay_neural)
 
-                processed_frame = cv2.add(corrected_frame, combined_overlay)
+                processed_frame = cv2.add(table_frame, combined_overlay)
                 # == END OF MAIN PROCESSING ==
-
-                if _display_scale != 1.0:
-                    new_width = int(video.width * _display_scale)
-                    new_height = int(video.height * _display_scale)
-                else:
-                    new_width, new_height = video.width, video.height
 
                 # Display selected windows
                 if SHOW_ORIGINAL:
-                    disp_orig = cv2.resize(frame, (new_width, new_height)) if _display_scale != 1.0 else frame
-                    cv2.imshow("Snooker Video (Original)", disp_orig)
+                    cv2.imshow("Snooker Video (Original)", scale_frame(frame, _display_scale))
 
                 if SHOW_CORRECTED:
-                    disp_corr = cv2.resize(corrected_frame, (new_width, new_height)) if _display_scale != 1.0 else corrected_frame
-                    cv2.imshow("Snooker Video (Perspective Corrected)", disp_corr)
-
-                if SHOW_PROCESSED:
-                    disp_proc = cv2.resize(processed_frame, (new_width, new_height)) if _display_scale != 1.0 else processed_frame
-                    cv2.imshow("Snooker Video (Processed)", disp_proc)
+                    cv2.imshow("Snooker Video (Perspective Corrected)", scale_frame(corrected_frame, _display_scale))
 
                 if SHOW_table_detect:
-                    cv2.imshow("Snooker Table (Top view)", table_top_view(frame))
-                
+                    cv2.imshow("Snooker Video (Table Detection)", scale_frame(table_frame, _display_scale))
+
+                if SHOW_PROCESSED:
+                    cv2.imshow("Snooker Video (Processed)", scale_frame(processed_frame, _display_scale))
+
                 # Escape key: Q
                 if cv2.waitKey(int(1000 / video.fps / _video_speed)) & 0xFF == ord('q'):
                     print("Video playback interrupted by user.")
@@ -117,6 +109,12 @@ def main():
         cv2.destroyAllWindows()
     
     print("\nProgram completed.")
+
+def scale_frame(img, scale):
+    if scale == 1.0:
+        return img
+    h, w = img.shape[:2]
+    return cv2.resize(img, (int(w * scale), int(h * scale)))
 
 if __name__ == "__main__":
     main()
