@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 
 # --- Settings --------------------------------------------------------------
-VIEW_WIDTH = 480
+VIEW_WIDTH = 480*2
 CLOTH_ASPECT = 1920 / 1080
-VIEW_MARGIN = 0.06
+VIEW_MARGIN = 0.02
 ROTATION = 180
 
 HSV_LOWER = (35, 60, 40)

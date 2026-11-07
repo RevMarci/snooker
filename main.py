@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 from src.youtube_clip_downloader import YouTubeClipDownloader
 from src.video_handler import VideoHandler
-from src.perspective_corrector import PerspectiveCorrector
 
 from src.color_based_ball_detector import ColorBasedBallDetector
 from src.neural_network_ball_detector import NeuralNetworkBallDetector
@@ -11,7 +10,7 @@ from src.table_top_view import table_top_view
 
 # Adjust this to change the video speed
 _video_speed = 1.0
-_display_scale = 1.0
+_display_scale = 0.4
 
 SHOW_ORIGINAL = False
 SHOW_CORRECTED = False
@@ -48,10 +47,10 @@ def main():
             
         if os.path.exists(user_input):
             video_to_process = user_input
-        elif os.path.exists(os.path.join("clips", user_input)):
-            video_to_process = os.path.join("clips", user_input)
+        elif os.path.exists(os.path.join("source/clips", user_input)):
+            video_to_process = os.path.join("source/clips", user_input)
         else:
-            print(f"Error: The file '{user_input}' was not found in the current or 'clips/' directory.")
+            print(f"Error: The file '{user_input}' was not found in the current or 'source/clips/' directory.")
             return
 
     print(f"\n> Video selected for processing: {video_to_process}\n")
@@ -61,14 +60,11 @@ def main():
         color_based_detector = ColorBasedBallDetector()
         neural_network_detector = NeuralNetworkBallDetector()
 
-        perspective_corrector = PerspectiveCorrector()
-
         with VideoHandler(video_to_process) as video:
             print(f"Video paramaters: {video.width}x{video.height}, FPS: {video.fps}")
             
             for frame_index, frame in enumerate(video.frames()):
                 # Frame correction
-                corrected_frame = perspective_corrector.process(frame)
                 table_frame = table_top_view(frame)
                 
                 # == MAIN PROCESSING ==

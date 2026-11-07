@@ -72,7 +72,7 @@ class YouTubeClipDownloader:
         
         # File name
         output_input = input("Output file name (leave empty for automatic 'clip[X].mp4'): ").strip()
-        base_dir = "clips"
+        base_dir = "source/clips"
         
         if not output_input:
             i = 1
