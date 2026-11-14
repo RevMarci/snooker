@@ -5,7 +5,7 @@ from src.youtube_clip_downloader import YouTubeClipDownloader
 from src.video_handler import VideoHandler
 
 from src.color_based_ball_detector import ColorBasedBallDetector
-from src.neural_network_ball_detector import NeuralNetworkBallDetector
+from src.neural_network.neural_network_ball_detector import NeuralNetworkBallDetector
 from src.table_top_view import table_top_view
 
 # Adjust this to change the video speed
@@ -19,6 +19,9 @@ SHOW_table_detect = True
 
 ENABLE_COLOR_DETECTOR = True
 ENABLE_NEURAL_DETECTOR = True
+
+MODEL_PATH = "src/neural_network/v1.pt"
+NN_CONF_THRESHOLD = 0.45
 
 def main():
     print("Run snooker detection...\n")
@@ -58,7 +61,10 @@ def main():
     # Process the video
     try:
         color_based_detector = ColorBasedBallDetector()
-        neural_network_detector = NeuralNetworkBallDetector()
+        neural_network_detector = NeuralNetworkBallDetector(
+            model_path=MODEL_PATH,
+            conf_threshold=NN_CONF_THRESHOLD
+        )
 
         with VideoHandler(video_to_process) as video:
             print(f"Video paramaters: {video.width}x{video.height}, FPS: {video.fps}")
@@ -78,7 +84,9 @@ def main():
                     overlay_neural = neural_network_detector.process_frame(table_frame)
                     combined_overlay = cv2.add(combined_overlay, overlay_neural)
 
-                processed_frame = cv2.add(table_frame, combined_overlay)
+                mask = cv2.cvtColor(combined_overlay, cv2.COLOR_BGR2GRAY) > 0
+                processed_frame = table_frame.copy()
+                processed_frame[mask] = combined_overlay[mask]
                 # == END OF MAIN PROCESSING ==
 
                 # Display selected windows
