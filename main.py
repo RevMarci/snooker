@@ -17,7 +17,7 @@ SHOW_CORRECTED = False
 SHOW_PROCESSED = True
 SHOW_table_detect = True
 
-ENABLE_COLOR_DETECTOR = True
+ENABLE_COLOR_DETECTOR = False
 ENABLE_NEURAL_DETECTOR = True
 
 MODEL_PATH = "src/neural_network/v1.pt"
