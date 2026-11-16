@@ -5,8 +5,8 @@ import numpy as np
 class ColorBasedBallDetector:
     def __init__(self):
         # Az asztal posztójának HSV tartománya (a konkrét videóhoz hangolandó)
-        self.cloth_lower = np.array([55, 130, 30])
-        self.cloth_upper = np.array([65, 230, 190])
+        self.cloth_lower = np.array([40, 80, 100])
+        self.cloth_upper = np.array([80, 255, 255])
 
         # Golyószínek: név -> [(alsó, felső), ...]. Minden érték hangolandó!
         # A piros / rózsaszín / barna átfedhet, ezért a golyó pixeleinek
@@ -34,9 +34,9 @@ class ColorBasedBallDetector:
         }
 
         # Golyó méret- és alakszűrők (felbontásfüggő, hangolandó)
-        self.min_area = 30
-        self.max_area = 1500
-        self.min_circularity = 0.6
+        self.min_area = 150
+        self.max_area = 4000
+        self.min_circularity = 0.25
         self.min_vote_ratio = 0.3
 
         self.kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
@@ -63,6 +63,7 @@ class ColorBasedBallDetector:
         cloth = cv2.inRange(hsv, self.cloth_lower, self.cloth_upper)
         cloth = cv2.morphologyEx(cloth, cv2.MORPH_OPEN, self.kernel)
         cloth = cv2.morphologyEx(cloth, cv2.MORPH_CLOSE, self.kernel)
+        cv2.imshow("cloth", cloth)
 
         contours, _ = cv2.findContours(cloth, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if not contours:
