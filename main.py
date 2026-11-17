@@ -20,7 +20,7 @@ ENABLE_COLOR_DETECTOR = False
 ENABLE_NEURAL_DETECTOR = True
 
 MODEL_PATH = "src/neural_network/v1.pt"
-NN_CONF_THRESHOLD = 0.45
+NN_CONF_THRESHOLD = 0.30
 
 def main():
     print("Run snooker detection...\n")

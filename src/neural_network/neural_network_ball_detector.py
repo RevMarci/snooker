@@ -13,8 +13,8 @@ class NeuralNetworkBallDetector:
     def __init__(
         self,
         model_path: str = "src/neural_network/v1.pt",
-        conf_threshold: float = 0.45,
-        iou_threshold: float = 0.45,
+        conf_threshold: float = 0.30,
+        iou_threshold: float = 0.50,
         renderer: DetectionOverlayRenderer | None = None,
     ):
         if not os.path.exists(model_path):
