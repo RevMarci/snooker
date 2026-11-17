@@ -10,14 +10,13 @@ from src.table_top_view import table_top_view
 
 # Adjust this to change the video speed
 _video_speed = 1.0
-_display_scale = 0.4
+_display_scale = 0.45
 
 SHOW_ORIGINAL = False
-SHOW_CORRECTED = False
 SHOW_PROCESSED = True
-SHOW_table_detect = True
+SHOW_table_detect = False
 
-ENABLE_COLOR_DETECTOR = True
+ENABLE_COLOR_DETECTOR = False
 ENABLE_NEURAL_DETECTOR = True
 
 MODEL_PATH = "src/neural_network/v1.pt"
@@ -92,9 +91,6 @@ def main():
                 # Display selected windows
                 if SHOW_ORIGINAL:
                     cv2.imshow("Snooker Video (Original)", scale_frame(frame, _display_scale))
-
-                if SHOW_CORRECTED:
-                    cv2.imshow("Snooker Video (Perspective Corrected)", scale_frame(corrected_frame, _display_scale))
 
                 if SHOW_table_detect:
                     cv2.imshow("Snooker Video (Table Detection)", scale_frame(table_frame, _display_scale))
